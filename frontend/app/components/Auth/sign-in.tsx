@@ -145,6 +145,7 @@ export default function AuthPages() {
       const res = await fetch("http://localhost:3000/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({
           email: loginEmail.trim(),
           password: loginPassword,
@@ -201,6 +202,7 @@ export default function AuthPages() {
       const res = await fetch("http://localhost:3000/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({
           name: registerName,
           email: registerEmail.trim(),

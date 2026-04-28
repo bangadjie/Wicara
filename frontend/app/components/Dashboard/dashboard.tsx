@@ -431,13 +431,29 @@ const DesktopSidebar = ({ isOpen }: { isOpen: boolean }) => {
   const [user, setUser] = useState<UserData | null>(null);
 
   useEffect(() => {
-    const sampleUser = {
-      name: "Wicara User",
-      email: "wicara@gmail.com",
-      role: "siswa",
-      isLoggedIn: true,
+    const fetchUser = async () => {
+      try {
+        const res = await fetch("http://localhost:3000/auth/me", {
+          method: "GET",
+          credentials: "include",
+        });
+        if (!res.ok) {
+          window.location.href = "/login";
+          return;
+        }
+        const data = await res.json();
+        setUser({
+          name: data.user.nama || "User",
+          email: "",
+          role: data.user.role,
+          isLoggedIn: true,
+        });
+      } catch (err) {
+        console.error(err);
+        window.location.href = "/login";
+      }
     };
-    setUser(sampleUser);
+    fetchUser();
   }, []);
 
   const menuTop = [
@@ -497,7 +513,12 @@ const DesktopSidebar = ({ isOpen }: { isOpen: boolean }) => {
 
       <div className="pt-4 border-t border-cyan-200 space-y-1">
         <button
-          onClick={() => {
+          onClick={async () => {
+            await fetch("http://localhost:3000/auth/logout", {
+              method: "POST",
+              credentials: "include",
+            });
+
             window.location.href = "/";
           }}
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg font-bold text-sm transition-all text-red-500 hover:bg-red-50"
@@ -519,13 +540,29 @@ const MobileSidebar = ({
   const [user, setUser] = useState<UserData | null>(null);
 
   useEffect(() => {
-    const sampleUser = {
-      name: "Wicara User",
-      email: "wicara@gmail.com",
-      role: "siswa",
-      isLoggedIn: true,
+    const fetchUser = async () => {
+      try {
+        const res = await fetch("http://localhost:3000/auth/me", {
+          method: "GET",
+          credentials: "include",
+        });
+        if (!res.ok) {
+          window.location.href = "/login";
+          return;
+        }
+        const data = await res.json();
+        setUser({
+          name: data.user.nama || "User",
+          email: "",
+          role: data.user.role,
+          isLoggedIn: true,
+        });
+      } catch (err) {
+        console.error(err);
+        window.location.href = "/login";
+      }
     };
-    setUser(sampleUser);
+    fetchUser();
   }, []);
 
   const menuTop = [
@@ -601,7 +638,12 @@ const MobileSidebar = ({
 
         <div className="pt-4 border-t border-cyan-200 space-y-1">
           <button
-            onClick={() => {
+            onClick={async () => {
+              await fetch("http://localhost:3000/auth/logout", {
+                method: "POST",
+                credentials: "include",
+              });
+
               window.location.href = "/";
             }}
             className="w-full flex items-center gap-3 px-3 py-3 rounded-lg font-bold text-sm transition-all text-red-500 hover:bg-red-50"
@@ -651,18 +693,35 @@ export default function WicaraDashboard() {
   const [selectedClass, setSelectedClass] = useState("Kelas 5 SD");
   const [user, setUser] = useState<UserData | null>(null);
   const [showVideoModal, setShowVideoModal] = useState(false);
+  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState<"dashboard" | "materi">(
     "dashboard",
   );
 
   useEffect(() => {
-    const sampleUser = {
-      name: "Wicara User",
-      email: "wicara@gmail.com",
-      role: "siswa",
-      isLoggedIn: true,
+    const fetchUser = async () => {
+      try {
+        const res = await fetch("http://localhost:3000/auth/me", {
+          method: "GET",
+          credentials: "include",
+        });
+        if (!res.ok) {
+          window.location.href = "/login";
+          return;
+        }
+        const data = await res.json();
+        setUser({
+          name: data.user.nama || "User",
+          email: "",
+          role: data.user.role,
+          isLoggedIn: true,
+        });
+      } catch (err) {
+        console.error(err);
+        window.location.href = "/login";
+      }
     };
-    setUser(sampleUser);
+    fetchUser();
   }, []);
 
   const classes = ["Kelas 4 SD", "Kelas 5 SD", "Kelas 6 SD"];
@@ -729,30 +788,22 @@ export default function WicaraDashboard() {
 
   const games = [
     {
-      name: "Gesture Match",
-      icon: "🎯",
-      color: "bg-gradient-to-br from-yellow-400 to-orange-500",
+      name: "GestureMatch",
+      icon: "🤚",
+      color: "bg-gradient-to-br from-cyan-400 to-teal-500",
+      path: "/gesture-match",
     },
     {
-      name: "Puzzle",
-      icon: "🧩",
-      color: "bg-gradient-to-br from-blue-400 to-indigo-500",
-    },
-    {
-      name: "Story Builder",
-      icon: "📚",
-      color: "bg-gradient-to-br from-purple-400 to-pink-500",
-    },
-    {
-      name: "Detective",
-      icon: "🔍",
-      color: "bg-gradient-to-br from-green-400 to-emerald-500",
+      name: "Sign Translate",
+      icon: "🤟",
+      color: "bg-gradient-to-br from-purple-400 to-violet-500",
+      path: "/sign-language-translate",
     },
   ];
 
   const badges = [
-    { name: "Ahli Kosakata", icon: "📝", earned: true },
-    { name: "Master Wicara", icon: "🏆", earned: true },
+    { name: "Task Slayer", icon: "📝", earned: true },
+    { name: "Champ of Wicara", icon: "🏆", earned: true },
     { name: "Game Expert", icon: "🎮", earned: false },
   ];
 
@@ -925,30 +976,102 @@ export default function WicaraDashboard() {
               </div>
             </div>
 
-            {/* Games */}
+            {/* Arena Pintar */}
             <div className="bg-white rounded-xl p-4 md:p-8 border border-cyan-200 shadow-sm">
-              <h2 className="text-gray-800 font-bold text-base md:text-lg uppercase tracking-wider mb-4 md:mb-6 flex items-center gap-2">
-                <Gamepad2 size={18} className="text-teal-500" />
-                ARENA PINTAR
-              </h2>
+              {/* Header + arrow button */}
+              <div className="flex items-start justify-between gap-4 mb-5">
+                <div>
+                  <h2 className="text-gray-800 font-bold text-base md:text-lg uppercase tracking-wider flex items-center gap-2 mb-1">
+                    <Gamepad2 size={18} className="text-teal-500" />
+                    ARENA PINTAR
+                  </h2>
+                </div>
+                <button
+                  onClick={() => navigate("/arena-pintar")}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-cyan-500 to-teal-500 text-white text-xs font-bold hover:shadow-md transition-all flex-shrink-0 group"
+                >
+                  Buka Arena
+                  <ChevronRight
+                    size={14}
+                    className="group-hover:translate-x-0.5 transition-transform"
+                  />
+                </button>
+              </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-                {games.map((game, idx) => (
-                  <div
-                    key={idx}
-                    className={`${game.color} rounded-xl p-4 md:p-6 text-white text-center cursor-pointer hover:scale-105 transition-transform shadow-md`}
-                  >
-                    <div className="text-3xl md:text-4xl mb-2 md:mb-3">
-                      {game.icon}
+              {/* Feature Cards */}
+              <div className="grid grid-cols-2 gap-3 md:gap-4">
+                {/* GestureMatch */}
+                <div
+                  onClick={() => navigate("/gesture-match")}
+                  className="cursor-pointer rounded-xl border border-cyan-200 bg-white hover:border-teal-300 hover:shadow-md transition-all overflow-hidden group"
+                >
+                  <div className="h-1 bg-gradient-to-r from-teal-400 to-cyan-400" />
+                  <div className="p-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="w-10 h-10 rounded-lg bg-teal-50 flex items-center justify-center text-xl">
+                        🤚
+                      </div>
+                      <div className="w-7 h-7 rounded-full border border-gray-200 group-hover:border-cyan-300 flex items-center justify-center transition-colors">
+                        <ChevronRight
+                          size={14}
+                          className="text-gray-400 group-hover:text-cyan-500 transition-colors"
+                        />
+                      </div>
                     </div>
-                    <h3 className="font-bold text-xs md:text-sm">
-                      {game.name}
+                    <h3 className="font-bold text-sm text-gray-800 mb-1">
+                      GestureMatch
                     </h3>
+                    <p className="text-[11px] text-gray-500 leading-relaxed mb-3">
+                      Praktik gerakan isyarat & validasi langsung lewat kamera
+                      AI
+                    </p>
+                    <div className="flex gap-1.5 flex-wrap">
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-teal-50 text-teal-700 font-bold">
+                        4 level
+                      </span>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-500 font-bold">
+                        AI
+                      </span>
+                    </div>
                   </div>
-                ))}
+                </div>
+
+                {/* Sign Translate */}
+                <div
+                  onClick={() => navigate("/sign-translate")}
+                  className="cursor-pointer rounded-xl border border-purple-100 bg-white hover:border-purple-300 hover:shadow-md transition-all overflow-hidden group"
+                >
+                  <div className="h-1 bg-gradient-to-r from-purple-400 to-violet-400" />
+                  <div className="p-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="w-10 h-10 rounded-lg bg-purple-50 flex items-center justify-center text-xl">
+                        🤟
+                      </div>
+                      <div className="w-7 h-7 rounded-full border border-gray-200 group-hover:border-purple-300 flex items-center justify-center transition-colors">
+                        <ChevronRight
+                          size={14}
+                          className="text-gray-400 group-hover:text-purple-500 transition-colors"
+                        />
+                      </div>
+                    </div>
+                    <h3 className="font-bold text-sm text-gray-800 mb-1">
+                      Sign Translate
+                    </h3>
+                    <p className="text-[11px] text-gray-500 leading-relaxed mb-3">
+                      Teks ke animasi isyarat SIBI instan & real-time
+                    </p>
+                    <div className="flex gap-1.5 flex-wrap">
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 font-bold">
+                        SIBI
+                      </span>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-500 font-bold">
+                        Real-time
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-
             {/* Badges - Mobile */}
             <div className="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-xl p-4 md:p-6 border-2 border-yellow-200 shadow-sm lg:hidden">
               <div className="flex items-center justify-between mb-4">

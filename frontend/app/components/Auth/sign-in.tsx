@@ -6,8 +6,6 @@ import {
   Lock,
   User,
   UserCircle,
-  GraduationCap,
-  BookOpen,
   ChevronDown,
 } from "lucide-react";
 
